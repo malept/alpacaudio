@@ -34,11 +34,14 @@ _.templateSettings =
   escape: /\[%-([\s\S]+?)%\]/g
 
 # namespace
-gmp = {}
+alpacaudio = {}
 
-gmp.QUEUE_ID = 'queue'
+# Used for storage identifiers
+alpacaudio.player_name = 'AlpacAudio'
 
-gmp.get_template = (id, variable_name = 'model') ->
+alpacaudio.QUEUE_ID = 'queue'
+
+alpacaudio.get_template = (id, variable_name = 'model') ->
   ###
   Shortcut for creating a template function.
 
@@ -47,7 +50,7 @@ gmp.get_template = (id, variable_name = 'model') ->
   ###
   return _.template($("##{id}-tpl").html(), null, { variable: variable_name })
 
-gmp.song_url = (metadata) ->
+alpacaudio.song_url = (metadata) ->
   ###
   Generates a song URL based on song metadata.
 
@@ -56,30 +59,30 @@ gmp.song_url = (metadata) ->
   ###
   return "/songs/#{metadata.id}"
 
-gmp.notify = (title, options) ->
+alpacaudio.notify = (title, options) ->
   return unless notify.isSupported
   permission_level = notify.permissionLevel()
   switch permission_level
     when notify.PERMISSION_DEFAULT
       notify.requestPermission (result) ->
-        gmp.notify(title, options) if result is notify.PERMISSION_GRANTED
+        alpacaudio.notify(title, options) if result is notify.PERMISSION_GRANTED
     when notify.PERMISSION_GRANTED
       options ||= {}
       options.icon = '/favicon.ico' unless options.icon?
       notify.createNotification(title, options)
     # do nothing for notify.PERMISSION_DENIED
 
-class gmp.View extends Backbone.View
+class alpacaudio.View extends Backbone.View
   ###
-  Abstract base class for common GMP+Backbone views.
+  Abstract base class for common AlpacAudio+Backbone views.
   ###
   render: ->
     ###
-    Renders a template using the data from :meth:`~init::gmp.View.render_data`,
+    Renders a template using the data from :meth:`~init::alpacaudio.View.render_data`,
     and puts it in the view's element.
 
     :return: The view being operated on, for chaining purposes.
-    :rtype: :class:`init::gmp.View`
+    :rtype: :class:`init::alpacaudio.View`
     ###
     @$el.html(@template(@render_data()))
     return this
@@ -92,7 +95,7 @@ class gmp.View extends Backbone.View
     ###
     return @model.toJSON()
 
-class gmp.SingletonView extends gmp.View
+class alpacaudio.SingletonView extends alpacaudio.View
   ###
   Abstract base class for singleton views.
   ###

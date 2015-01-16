@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class gmp.Queue extends gmp.Playlist
+class alpacaudio.Queue extends alpacaudio.Playlist
   ###
   The play queue.
   ###
   constructor: (data, options) ->
     data ||= {}
-    data.id = gmp.QUEUE_ID
+    data.id = alpacaudio.QUEUE_ID
     data.name = 'Play Queue'
     data.current_track = 0
     super(data, options)
@@ -31,7 +31,7 @@ class gmp.Queue extends gmp.Playlist
     ###
     Retrieves the currently playing track.
 
-    :rtype: gmp.PlaylistEntry
+    :rtype: alpacaudio.PlaylistEntry
     ###
     tracks = @get('tracks')
     return null if tracks.length == 0
@@ -48,7 +48,7 @@ class gmp.Queue extends gmp.Playlist
     ###
     Sets the current track to the previous one.
 
-    :rtype: gmp.PlaylistEntry or :js:data:`null`
+    :rtype: alpacaudio.PlaylistEntry or :js:data:`null`
     ###
     current_track = @get('current_track')
     queue_size = @get('tracks').length
@@ -66,7 +66,7 @@ class gmp.Queue extends gmp.Playlist
     ###
     Advances the queue to the next track.
 
-    :rtype: gmp.PlaylistEntry or :js:data:`null`
+    :rtype: alpacaudio.PlaylistEntry or :js:data:`null`
     ###
     current_track = @get('current_track')
     queue_size = @get('tracks').length
@@ -84,7 +84,7 @@ class gmp.Queue extends gmp.Playlist
     :type idx: :js:class:`Number` (int)
     :param Boolean force_change: Whether to force a track change if ``idx`` is
                                  the same as ``current_track``.
-    :rtype: gmp.PlaylistEntry or :js:data:`null`
+    :rtype: alpacaudio.PlaylistEntry or :js:data:`null`
     ###
     return null if idx < 0 or idx >= @get('tracks').length
     if @get('current_track') == idx
@@ -113,21 +113,21 @@ class gmp.Queue extends gmp.Playlist
     ###
     Adds a non-queue playlist to the queue.
 
-    :type playlist: :class:`playlist::gmp.Playlist`
-                    (not :class:`queue::gmp.Queue`)
+    :type playlist: :class:`playlist::alpacaudio.Playlist`
+                    (not :class:`queue::alpacaudio.Queue`)
     ###
     return unless playlist?
-    return if playlist instanceof gmp.Queue
+    return if playlist instanceof alpacaudio.Queue
     @add_entries(playlist.get('tracks').models)
 
-class gmp.QueueView extends gmp.PlaylistView
+class alpacaudio.QueueView extends alpacaudio.PlaylistView
   constructor: (options) ->
     super(options)
     @model.on('change:current_track', @on_current_track_changed)
 
   render: ->
     super()
-    if gmp.player.is_playing()
+    if alpacaudio.player.is_playing()
       @icon_for_index(@model.get('current_track')).addClass('fa-music')
     return this
 
@@ -135,7 +135,7 @@ class gmp.QueueView extends gmp.PlaylistView
     e.stopImmediatePropagation()
     idx = $(e.target).parent().data('idx')
     same_track = idx == @model.get('current_track')
-    return if same_track and gmp.player.is_playing()
+    return if same_track and alpacaudio.player.is_playing()
     @model.seek(idx, same_track)
 
   icon_for_index: (idx) ->

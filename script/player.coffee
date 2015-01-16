@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-gmp.MAX_FAILED_TRACKS = 4
+alpacaudio.MAX_FAILED_TRACKS = 4
 
 ####
 # Functions
 ####
 
-gmp.human_readable_time = (seconds) ->
+alpacaudio.human_readable_time = (seconds) ->
   ###
   Converts seconds to MM:SS.
   ###
@@ -31,10 +31,10 @@ gmp.human_readable_time = (seconds) ->
   remainder = "0#{remainder}" if remainder < 10
   return "#{minutes}:#{remainder}"
 
-gmp.load_audio_backend = ->
+alpacaudio.load_audio_backend = ->
   backends = [
-    gmp.HTML5Audio
-    gmp.AuroraAudio
+    alpacaudio.HTML5Audio
+    alpacaudio.AuroraAudio
   ]
   for backend_cls in backends
     backend = new backend_cls
@@ -46,8 +46,8 @@ gmp.load_audio_backend = ->
 # Models
 ####
 
-class gmp.PlayerSettings extends Backbone.Model
-  localStorage: new Backbone.LocalStorage('GMusicProcurator.Settings')
+class alpacaudio.PlayerSettings extends Backbone.Model
+  localStorage: new Backbone.LocalStorage("#{alpacaudio.player_name}.Settings")
   defaults:
     volume: 50
     play_mode: 0
@@ -85,16 +85,16 @@ class gmp.PlayerSettings extends Backbone.Model
 # Views
 ####
 
-class gmp.NowPlayingView extends gmp.SingletonView
+class alpacaudio.NowPlayingView extends alpacaudio.SingletonView
   tagName: 'span'
   id: 'now-playing'
-  template: gmp.get_template('now-playing', 'track')
+  template: alpacaudio.get_template('now-playing', 'track')
 
 
-class gmp.PlayerView extends Backbone.View
+class alpacaudio.PlayerView extends Backbone.View
   tagName: 'section'
   id: 'player'
-  template: gmp.get_template('player')
+  template: alpacaudio.get_template('player')
   events:
     'click .play-pause': 'play_pause'
     'click .stop': 'stop'
@@ -117,7 +117,7 @@ class gmp.PlayerView extends Backbone.View
     @$play_pause = @$el.find('.play-pause').children('span')
     @$track_position = @$el.children('#track-position')
 
-    @audio = gmp.load_audio_backend()
+    @audio = alpacaudio.load_audio_backend()
     return this unless @audio?
 
     do_next_track = =>
@@ -130,32 +130,32 @@ class gmp.PlayerView extends Backbone.View
       @$play_pause.replaceClass('fa-play', 'fa-pause')
     @audio.timeupdate =>
       @$track_position.val(@audio.currentTime())
-      cur_pos = gmp.human_readable_time(@audio.currentTime())
-      total = gmp.human_readable_time(@current_duration)
+      cur_pos = alpacaudio.human_readable_time(@audio.currentTime())
+      total = alpacaudio.human_readable_time(@current_duration)
       @$track_position.attr('title', "#{cur_pos} / #{total}")
     @audio.play_started =>
       @failed_tracks = 0
       @$play_pause.replaceClass('fa-spinner fa-spin', 'fa-pause')
-      tview = new gmp.NowPlayingView({model: @current_track_metadata})
+      tview = new alpacaudio.NowPlayingView({model: @current_track_metadata})
       tview.renderify('#player > nav', 'prepend')
       icon = '/favicon.ico'
       track = @current_track_metadata.attributes
       @current_duration = track.durationMillis / 1000
       @$track_position.attr('max', @current_duration)
       icon = track.albumArtRef[0].url if track.albumArtRef?.length > 0
-      gmp.notify "Now Playing",
+      alpacaudio.notify "Now Playing",
         icon: icon
         body: "#{track.title} - #{track.artist}: #{track.album}"
         tag: track.id
     @audio.error =>
       @failed_tracks++
-      if @failed_tracks < gmp.MAX_FAILED_TRACKS
+      if @failed_tracks < alpacaudio.MAX_FAILED_TRACKS
         msg = 'Could not load track, skipping.'
         do_next_track()
       else
         msg = 'Could not load track. Please check your connection.'
         @$play_pause.replaceClass('fa-spinner fa-spin', 'fa-play')
-      gmp.notify 'Error loading track',
+      alpacaudio.notify 'Error loading track',
         body: msg
         tag: 'track-load-error'
     @audio.ended -> do_next_track()
@@ -172,7 +172,7 @@ class gmp.PlayerView extends Backbone.View
     return this
 
   play: (metadata, url) ->
-    url = gmp.song_url(metadata) unless url?
+    url = alpacaudio.song_url(metadata) unless url?
     if @audio?.audio_playable()
       if @audio.mp3_playable()
         @current_track_metadata = metadata

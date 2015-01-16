@@ -20,35 +20,35 @@
 # Models / Collections
 ####
 
-class gmp.Playlist extends Backbone.Model
+class alpacaudio.Playlist extends Backbone.Model
   ###
   A representation of a Google Music playlist.
   ###
   constructor: (data, options) ->
     data ||= {}
     tracks = if data.tracks? then data.tracks else []
-    data.tracks = new gmp.PlaylistEntries(tracks)
+    data.tracks = new alpacaudio.PlaylistEntries(tracks)
     super(data, options)
 
   add_track: (track) ->
     ###
     Appends a track to a playlist.
 
-    :type track: :class:`gmp.Track`
+    :type track: :class:`alpacaudio.Track`
     ###
-    @add_entries(new gmp.PlaylistEntry({track: track}))
+    @add_entries(new alpacaudio.PlaylistEntry({track: track}))
 
   add_entries: (entry_or_entries) ->
     ###
     Appends one or more playlist entries to a playlist.
 
-    :type entry_or_entries: :class:`gmp.PlaylistEntry` or an :js:class:`Array`
-                            of :class:`gmp.PlaylistEntry` objects.
+    :type entry_or_entries: :class:`alpacaudio.PlaylistEntry` or an :js:class:`Array`
+                            of :class:`alpacaudio.PlaylistEntry` objects.
     ###
     @get('tracks').add(entry_or_entries)
 
-class gmp.PlaylistCollection extends Backbone.Collection
-  model: gmp.Playlist
+class alpacaudio.PlaylistCollection extends Backbone.Collection
+  model: alpacaudio.Playlist
   url: '/playlists'
   parse: (resp) ->
     ###
@@ -60,32 +60,32 @@ class gmp.PlaylistCollection extends Backbone.Collection
         return entry.track?.storeId?
       return playlist.tracks.length > 0
 
-class gmp.PlaylistEntry extends Backbone.Model
+class alpacaudio.PlaylistEntry extends Backbone.Model
   constructor: (data, options) ->
     track = data.track
-    data.track = new gmp.Track(track)
+    data.track = new alpacaudio.Track(track)
     super(data, options)
 
-class gmp.PlaylistEntries extends Backbone.Collection
-  model: gmp.PlaylistEntry
+class alpacaudio.PlaylistEntries extends Backbone.Collection
+  model: alpacaudio.PlaylistEntry
 
-class gmp.Track extends Backbone.Model
+class alpacaudio.Track extends Backbone.Model
   constructor: (data, options) ->
     data.id = data.storeId if !!data && !!data.storeId
     super(data, options)
 
-class gmp.Tracks extends Backbone.Collection
-  model: gmp.Track
+class alpacaudio.Tracks extends Backbone.Collection
+  model: alpacaudio.Track
 
 ####
 # Views
 ####
 
-class gmp.PlaylistView extends gmp.SingletonView
+class alpacaudio.PlaylistView extends alpacaudio.SingletonView
   tagName: 'section'
   id: 'playlist'
-  template: gmp.get_template('playlist', 'playlist')
-  track_template: gmp.get_template('playlist-track', 'pt')
+  template: alpacaudio.get_template('playlist', 'playlist')
+  track_template: alpacaudio.get_template('playlist-track', 'pt')
   events:
     'mouseover .albumart span.fa': 'album_mouseover'
     'mouseout .albumart span.fa': 'album_mouseout'
@@ -126,13 +126,13 @@ class gmp.PlaylistView extends gmp.SingletonView
     @$('.albumart span.fa-music').removeClass('fa-music')
     @$('.albumart span.fa-spinner').removeClass(spin_cls)
     @current_icon = icon
-    gmp.player.play(song)
+    alpacaudio.player.play(song)
     icon.replaceClass('fa-play', spin_cls)
     unless @_set_play_started_handler?
-      gmp.player.audio.play_started =>
+      alpacaudio.player.audio.play_started =>
         @current_icon.replaceClass(spin_cls, 'fa-music') if @current_icon
       @_set_play_started_handler = true
-    gmp.player.audio.error =>
+    alpacaudio.player.audio.error =>
       @current_icon.removeClass(spin_cls) if @current_icon
       @current_icon = null
 
@@ -140,9 +140,9 @@ class gmp.PlaylistView extends gmp.SingletonView
     icon = $(e.target)
     entry_id = icon.closest('tr').data('entry-id')
     entry = @model.get('tracks').get(entry_id)
-    queue = gmp.queue.model
+    queue = alpacaudio.queue.model
     queue.insert_entry_after_current(entry)
-    unless gmp.player.is_playing()
+    unless alpacaudio.player.is_playing()
       last = queue.get('tracks').length - 1
       if queue.get('current_track') == last
         queue.trigger('change:current_track', queue, last)
@@ -150,8 +150,8 @@ class gmp.PlaylistView extends gmp.SingletonView
         queue.set('current_track', last)
 
   add_to_queue: ->
-    gmp.queue.model.add_playlist(@model)
-    gmp.notify("Added playlist '#{@model.get('name')}' to queue.")
+    alpacaudio.queue.model.add_playlist(@model)
+    alpacaudio.notify("Added playlist '#{@model.get('name')}' to queue.")
 
   on_tracks_add: (model, collection, options) =>
     track = @render_track(model, collection.indexOf(model))
@@ -160,29 +160,29 @@ class gmp.PlaylistView extends gmp.SingletonView
     else # append
       @$el.find('tbody').append(track)
 
-class gmp.PlaylistEntryView extends gmp.View
+class alpacaudio.PlaylistEntryView extends alpacaudio.View
   tagName: 'li'
-  template: gmp.get_template('playlist-entry', 'entry')
+  template: alpacaudio.get_template('playlist-entry', 'entry')
 
 ####
 # Routers
 ####
 
-class gmp.PlaylistRouter extends Backbone.Router
+class alpacaudio.PlaylistRouter extends Backbone.Router
   routes:
     'playlist/:id': 'load_playlist'
 
   constructor: (options) ->
     super(options)
     @playlists =
-      queue: gmp.queue.render()
+      queue: alpacaudio.queue.render()
 
   load_playlist: (id) ->
     view = @playlists[id]
     func = 'replace'
     unless view
-      view = new gmp.PlaylistView({
-        model: gmp.playlists.get(id)
+      view = new alpacaudio.PlaylistView({
+        model: alpacaudio.playlists.get(id)
       })
       @playlists[id] = view
       func = 'renderify'
