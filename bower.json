@@ -1,0 +1,24 @@
+{
+  "name": "alpacaudio",
+  "authors": [
+    "Mark Lee"
+  ],
+  "description": "HTML5 audio player",
+  "license": "GPL-3.0+",
+  "homepage": "https://github.com/malept/alpacaudio",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "aurora.js": "audiocogs/aurora.js#~0.4.4",
+    "backbone": "1.1.2",
+    "backbone.localstorage": "~1.1.15",
+    "font-awesome": "~4.2.0",
+    "html5-desktop-notifications": "#bf0d733341bb698771f36d1dac918c3213a43cd4",
+    "jquery": "~2.1.3",
+    "underscore": "lodash#~2.4.1",
+    "mp3.js": "audiocogs/mp3.js#~0.1.0"
+  }
+}
