@@ -78,8 +78,9 @@ class AlpacAudio.View extends Backbone.View
   ###
   render: ->
     ###
-    Renders a template using the data from :meth:`~init::AlpacAudio.View.render_data`,
-    and puts it in the view's element.
+    Renders a template using the data from
+    :meth:`~init::AlpacAudio.View.render_data`, and puts it in the
+    view's element.
 
     :return: The view being operated on, for chaining purposes.
     :rtype: :class:`init::AlpacAudio.View`

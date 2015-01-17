@@ -42,8 +42,9 @@ class AlpacAudio.Playlist extends Backbone.Model
     ###
     Appends one or more playlist entries to a playlist.
 
-    :type entry_or_entries: :class:`AlpacAudio.PlaylistEntry` or an :js:class:`Array`
-                            of :class:`AlpacAudio.PlaylistEntry` objects.
+    :type entry_or_entries: :class:`AlpacAudio.PlaylistEntry` or an
+                            :js:class:`Array` of
+                            :class:`AlpacAudio.PlaylistEntry` objects.
     ###
     @get('tracks').add(entry_or_entries)
 
