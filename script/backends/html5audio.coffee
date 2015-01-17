@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-alpacaudio.MP3_FMT = 'audio/mpeg'
+AlpacAudio.MP3_FMT = 'audio/mpeg'
 
-class alpacaudio.HTML5Audio
+class AlpacAudio.HTML5Audio
   ###
   Uses HTMLAudioElement to play MP3s.
   ###
@@ -61,7 +61,7 @@ class alpacaudio.HTML5Audio
     return !!@player.canPlayType
 
   mp3_playable: ->
-    return @player.canPlayType(alpacaudio.MP3_FMT)
+    return @player.canPlayType(AlpacAudio.MP3_FMT)
 
   play_started: (handler) ->
     if handler?

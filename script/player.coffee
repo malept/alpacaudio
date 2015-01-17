@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-alpacaudio.MAX_FAILED_TRACKS = 4
+AlpacAudio.MAX_FAILED_TRACKS = 4
 
 ####
 # Functions
 ####
 
-alpacaudio.human_readable_time = (seconds) ->
+AlpacAudio.human_readable_time = (seconds) ->
   ###
   Converts seconds to MM:SS.
   ###
@@ -31,10 +31,10 @@ alpacaudio.human_readable_time = (seconds) ->
   remainder = "0#{remainder}" if remainder < 10
   return "#{minutes}:#{remainder}"
 
-alpacaudio.load_audio_backend = ->
+AlpacAudio.load_audio_backend = ->
   backends = [
-    alpacaudio.HTML5Audio
-    alpacaudio.AuroraAudio
+    AlpacAudio.HTML5Audio
+    AlpacAudio.AuroraAudio
   ]
   for backend_cls in backends
     backend = new backend_cls
@@ -46,8 +46,8 @@ alpacaudio.load_audio_backend = ->
 # Models
 ####
 
-class alpacaudio.PlayerSettings extends Backbone.Model
-  localStorage: new Backbone.LocalStorage("#{alpacaudio.player_name}.Settings")
+class AlpacAudio.PlayerSettings extends Backbone.Model
+  localStorage: new Backbone.LocalStorage("#{AlpacAudio.player_name}.Settings")
   defaults:
     volume: 50
     play_mode: 0
@@ -85,16 +85,16 @@ class alpacaudio.PlayerSettings extends Backbone.Model
 # Views
 ####
 
-class alpacaudio.NowPlayingView extends alpacaudio.SingletonView
+class AlpacAudio.NowPlayingView extends AlpacAudio.SingletonView
   tagName: 'span'
   id: 'now-playing'
-  template: alpacaudio.get_template('now-playing', 'track')
+  template: AlpacAudio.get_template('now-playing', 'track')
 
 
-class alpacaudio.PlayerView extends Backbone.View
+class AlpacAudio.PlayerView extends Backbone.View
   tagName: 'section'
   id: 'player'
-  template: alpacaudio.get_template('player')
+  template: AlpacAudio.get_template('player')
   events:
     'click .play-pause': 'play_pause'
     'click .stop': 'stop'
@@ -117,7 +117,7 @@ class alpacaudio.PlayerView extends Backbone.View
     @$play_pause = @$el.find('.play-pause').children('span')
     @$track_position = @$el.children('#track-position')
 
-    @audio = alpacaudio.load_audio_backend()
+    @audio = AlpacAudio.load_audio_backend()
     return this unless @audio?
 
     do_next_track = =>
@@ -130,32 +130,32 @@ class alpacaudio.PlayerView extends Backbone.View
       @$play_pause.replaceClass('fa-play', 'fa-pause')
     @audio.timeupdate =>
       @$track_position.val(@audio.currentTime())
-      cur_pos = alpacaudio.human_readable_time(@audio.currentTime())
-      total = alpacaudio.human_readable_time(@current_duration)
+      cur_pos = AlpacAudio.human_readable_time(@audio.currentTime())
+      total = AlpacAudio.human_readable_time(@current_duration)
       @$track_position.attr('title', "#{cur_pos} / #{total}")
     @audio.play_started =>
       @failed_tracks = 0
       @$play_pause.replaceClass('fa-spinner fa-spin', 'fa-pause')
-      tview = new alpacaudio.NowPlayingView({model: @current_track_metadata})
+      tview = new AlpacAudio.NowPlayingView({model: @current_track_metadata})
       tview.renderify('#player > nav', 'prepend')
       icon = '/favicon.ico'
       track = @current_track_metadata.attributes
       @current_duration = track.durationMillis / 1000
       @$track_position.attr('max', @current_duration)
       icon = track.albumArtRef[0].url if track.albumArtRef?.length > 0
-      alpacaudio.notify "Now Playing",
+      AlpacAudio.notify "Now Playing",
         icon: icon
         body: "#{track.title} - #{track.artist}: #{track.album}"
         tag: track.id
     @audio.error =>
       @failed_tracks++
-      if @failed_tracks < alpacaudio.MAX_FAILED_TRACKS
+      if @failed_tracks < AlpacAudio.MAX_FAILED_TRACKS
         msg = 'Could not load track, skipping.'
         do_next_track()
       else
         msg = 'Could not load track. Please check your connection.'
         @$play_pause.replaceClass('fa-spinner fa-spin', 'fa-play')
-      alpacaudio.notify 'Error loading track',
+      AlpacAudio.notify 'Error loading track',
         body: msg
         tag: 'track-load-error'
     @audio.ended -> do_next_track()
@@ -172,7 +172,7 @@ class alpacaudio.PlayerView extends Backbone.View
     return this
 
   play: (metadata, url) ->
-    url = alpacaudio.song_url(metadata) unless url?
+    url = AlpacAudio.song_url(metadata) unless url?
     if @audio?.audio_playable()
       if @audio.mp3_playable()
         @current_track_metadata = metadata
