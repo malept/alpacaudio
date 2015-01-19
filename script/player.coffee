@@ -112,7 +112,8 @@ class AlpacAudio.PlayerView extends Backbone.View
     @settings = options.settings
 
   render: ->
-    @$el.html(@template())
+    @template (template) =>
+      @$el.html(template())
 
     @$play_pause = @$el.find('.play-pause').children('span')
     @$track_position = @$el.children('#track-position')

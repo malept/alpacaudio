@@ -101,7 +101,8 @@ class AlpacAudio.PlaylistView extends AlpacAudio.SingletonView
   render_track: (playlist_entry, idx) =>
     data = playlist_entry.toJSON()
     data.idx = idx if idx?
-    return @track_template(data)
+    return @track_template (template) ->
+      return template(data)
 
   render_data: ->
     data = super()

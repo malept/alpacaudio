@@ -30,6 +30,8 @@ AlpacAudio = {}
 # Used for storage identifiers
 AlpacAudio.player_name = 'AlpacAudio'
 
+AlpacAudio.base_template_url = '/templates'
+
 AlpacAudio.QUEUE_ID = 'queue'
 
 AlpacAudio.get_template = (id, variable_name = 'model') ->
@@ -38,8 +40,23 @@ AlpacAudio.get_template = (id, variable_name = 'model') ->
 
   Retrieves the template data by selecting the contents of an element by ID,
   and sets the name of the top-level variable in the template.
+  If the template does not exist in the DOM, attempt to retrieve it via XHR.
+
+  :rtype: :js:class:`Function`
   ###
-  return _.template($("##{id}-tpl").html(), null, { variable: variable_name })
+  return (callback) ->
+    template_dom_id = "##{id}-tpl"
+    template_element = $(template_dom_id)
+    make_template = (template_str) ->
+      return _.template(template_str, null, { variable: variable_name })
+    if template_element.length > 0
+      callback(make_template(template_element.html()))
+    else
+      template_url = "#{AlpacAudio.base_template_url}/#{id}.mtpl"
+      $.get(template_url).done (template_str) ->
+        $('body').append($('<script type="text/template"/>').
+                  attr(id: template_dom_id).text(template_str))
+        callback(make_template(template_str))
 
 AlpacAudio.song_url = (metadata) ->
   ###
@@ -76,7 +93,8 @@ class AlpacAudio.View extends Backbone.View
     :return: The view being operated on, for chaining purposes.
     :rtype: :class:`init::AlpacAudio.View`
     ###
-    @$el.html(@template(@render_data()))
+    @template (template) =>
+      @$el.html(template(@render_data()))
     return this
 
   render_data: ->
