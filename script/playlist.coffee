@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set ts=2 sts=2 sw=2 :
 #
-###! Copyright (C) 2014 Mark Lee, under the GPL (version 3+) ###
+###! Copyright (C) 2014, 2015 Mark Lee, under the GPL (version 3+) ###
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
