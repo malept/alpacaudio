@@ -24,15 +24,6 @@ do ($ = jQuery) ->
     ###
     return this.removeClass(to_remove).addClass(to_add)
 
-# Config for underscore templates:
-# * evaluate = [% ... %]
-# * interpolate = [[ ... ]]
-# * escape: [%- ... %]
-_.templateSettings =
-  evaluate: /\[%([\s\S]+?)%\]/g
-  interpolate: /\[\[([\s\S]+?)\]\]/g
-  escape: /\[%-([\s\S]+?)%\]/g
-
 # namespace
 AlpacAudio = {}
 
