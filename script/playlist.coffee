@@ -63,8 +63,17 @@ class AlpacAudio.PlaylistCollection extends Backbone.Collection
 
 class AlpacAudio.PlaylistEntry extends Backbone.Model
   constructor: (data, options) ->
-    track = data.track
-    data.track = new AlpacAudio.Track(track)
+    metadata = data.track
+    if AlpacAudio.tracks
+      if metadata.storeId
+        track = AlpacAudio.tracks.get(metadata.storeId)
+      else
+        track = AlpacAudio.tracks.findWhere(uuid: metadata.id)
+      data.track = if track? then track else new AlpacAudio.Track(metadata)
+      AlpacAudio.tracks.add(data.track)
+      data.id = data.track.id
+    else
+      data.track = new AlpacAudio.Track(metadata)
     super(data, options)
 
 class AlpacAudio.PlaylistEntries extends Backbone.Collection
@@ -72,7 +81,9 @@ class AlpacAudio.PlaylistEntries extends Backbone.Collection
 
 class AlpacAudio.Track extends Backbone.Model
   constructor: (data, options) ->
-    data.id = data.storeId if !!data && !!data.storeId
+    if data?
+      data.uuid = data.id if data.id?
+      data.id = data.storeId if data.storeId?
     super(data, options)
 
 class AlpacAudio.Tracks extends Backbone.Collection
