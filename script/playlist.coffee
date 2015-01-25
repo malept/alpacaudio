@@ -176,27 +176,3 @@ class AlpacAudio.PlaylistView extends AlpacAudio.SingletonView
 class AlpacAudio.PlaylistEntryView extends AlpacAudio.View
   tagName: 'li'
   template: AlpacAudio.get_template('playlist-entry', 'entry')
-
-####
-# Routers
-####
-
-class AlpacAudio.PlaylistRouter extends Backbone.Router
-  routes:
-    'playlist/:id': 'load_playlist'
-
-  constructor: (options) ->
-    super(options)
-    @playlists =
-      queue: AlpacAudio.queue.render()
-
-  load_playlist: (id) ->
-    view = @playlists[id]
-    func = 'replace'
-    unless view
-      view = new AlpacAudio.PlaylistView({
-        model: AlpacAudio.playlists.get(id)
-      })
-      @playlists[id] = view
-      func = 'renderify'
-    view[func]('main nav:first', 'after')
