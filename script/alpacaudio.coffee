@@ -123,6 +123,8 @@ class AlpacAudio.SingletonView extends AlpacAudio.View
                        object created via ``relative_selector``.
     ###
     $("##{@id}").remove()
+    if manip_func == 'after'
+      $("#{relative_selector} + *").remove()
     $(relative_selector)[manip_func](@el)
     @delegateEvents()
   renderify: (relative_selector, manip_func) ->
