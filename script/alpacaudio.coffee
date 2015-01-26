@@ -47,16 +47,18 @@ AlpacAudio.get_template = (id, variable_name = 'model') ->
   return (callback) ->
     template_dom_id = "##{id}-tpl"
     template_element = $(template_dom_id)
-    make_template = (template_str) ->
-      return _.template(template_str, null, { variable: variable_name })
+    make_template = (template_str, options) ->
+      return _.template(template_str, null, options)
+    options = variable: variable_name
     if template_element.length > 0
-      callback(make_template(template_element.html()))
+      callback(make_template(template_element.html(), options))
     else
       template_url = "#{AlpacAudio.base_template_url}/#{id}.mtpl"
+      options['sourceURL'] = template_url
       $.get(template_url).done (template_str) ->
         $('body').append($('<script type="text/template"/>').
                   attr(id: template_dom_id).text(template_str))
-        callback(make_template(template_str))
+        callback(make_template(template_str, options))
 
 AlpacAudio.song_url = (metadata) ->
   ###
