@@ -20,15 +20,20 @@
 # Models / Collections
 ####
 
-class AlpacAudio.Playlist extends Backbone.Model
+class AlpacAudio.TrackList extends Backbone.Model
   ###
-  A representation of a Google Music playlist.
+  A collection of tracks with some metadata attached to it.
   ###
   constructor: (data, options) ->
     data ||= {}
     tracks = if data.tracks? then data.tracks else []
-    data.tracks = new AlpacAudio.PlaylistEntries(tracks)
+    data.tracks = new AlpacAudio.TrackListEntries(tracks)
     super(data, options)
+
+class AlpacAudio.Playlist extends AlpacAudio.Tracklist
+  ###
+  A representation of a Google Music playlist, which can be mutable.
+  ###
 
   add_track: (track) ->
     ###
@@ -36,19 +41,22 @@ class AlpacAudio.Playlist extends Backbone.Model
 
     :type track: :class:`AlpacAudio.Track`
     ###
-    @add_entries(new AlpacAudio.PlaylistEntry({track: track}))
+    @add_entries(new AlpacAudio.TrackListEntry({track: track}))
 
   add_entries: (entry_or_entries) ->
     ###
     Appends one or more playlist entries to a playlist.
 
-    :type entry_or_entries: :class:`AlpacAudio.PlaylistEntry` or an
+    :type entry_or_entries: :class:`AlpacAudio.TrackListEntry` or an
                             :js:class:`Array` of
-                            :class:`AlpacAudio.PlaylistEntry` objects.
+                            :class:`AlpacAudio.TrackListEntry` objects.
     ###
     @get('tracks').add(entry_or_entries)
 
 class AlpacAudio.PlaylistCollection extends Backbone.Collection
+  ###
+  A collection of tracklists.
+  ###
   model: AlpacAudio.Playlist
   url: '/playlists'
   parse: (resp) ->
@@ -61,7 +69,7 @@ class AlpacAudio.PlaylistCollection extends Backbone.Collection
         return entry.track?.storeId?
       return playlist.tracks.length > 0
 
-class AlpacAudio.PlaylistEntry extends Backbone.Model
+class AlpacAudio.TrackListEntry extends Backbone.Model
   constructor: (data, options) ->
     metadata = data.track
     if AlpacAudio.tracks
@@ -76,8 +84,8 @@ class AlpacAudio.PlaylistEntry extends Backbone.Model
       data.track = new AlpacAudio.Track(metadata)
     super(data, options)
 
-class AlpacAudio.PlaylistEntries extends Backbone.Collection
-  model: AlpacAudio.PlaylistEntry
+class AlpacAudio.TrackListEntries extends Backbone.Collection
+  model: AlpacAudio.TrackListEntry
 
 class AlpacAudio.Track extends Backbone.Model
   constructor: (data, options) ->
@@ -93,10 +101,11 @@ class AlpacAudio.Tracks extends Backbone.Collection
 # Views
 ####
 
-class AlpacAudio.PlaylistView extends AlpacAudio.SingletonView
+class AlpacAudio.TrackListView extends AlpacAudio.SingletonView
   tagName: 'section'
   id: 'playlist'
   template: AlpacAudio.get_template('playlist', 'playlist')
+  table_template: AlpacAudio.get_template('playlist-table', 'playlist')
   track_template: AlpacAudio.get_template('playlist-track', 'pt')
   events:
     'mouseover .albumart span.fa': 'album_mouseover'
@@ -173,6 +182,6 @@ class AlpacAudio.PlaylistView extends AlpacAudio.SingletonView
     else # append
       @$el.find('tbody').append(track)
 
-class AlpacAudio.PlaylistEntryView extends AlpacAudio.View
+class AlpacAudio.TrackListEntryView extends AlpacAudio.View
   tagName: 'li'
   template: AlpacAudio.get_template('playlist-entry', 'entry')

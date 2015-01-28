@@ -31,7 +31,7 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
     ###
     Retrieves the currently playing track.
 
-    :rtype: AlpacAudio.PlaylistEntry
+    :rtype: AlpacAudio.TrackListEntry
     ###
     tracks = @get('tracks')
     return null if tracks.length == 0
@@ -48,7 +48,7 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
     ###
     Sets the current track to the previous one.
 
-    :rtype: AlpacAudio.PlaylistEntry or :js:data:`null`
+    :rtype: AlpacAudio.TrackListEntry or :js:data:`null`
     ###
     current_track = @get('current_track')
     queue_size = @get('tracks').length
@@ -66,7 +66,7 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
     ###
     Advances the queue to the next track.
 
-    :rtype: AlpacAudio.PlaylistEntry or :js:data:`null`
+    :rtype: AlpacAudio.TrackListEntry or :js:data:`null`
     ###
     current_track = @get('current_track')
     queue_size = @get('tracks').length
@@ -84,7 +84,7 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
     :type idx: :js:class:`Number` (int)
     :param Boolean force_change: Whether to force a track change if ``idx`` is
                                  the same as ``current_track``.
-    :rtype: AlpacAudio.PlaylistEntry or :js:data:`null`
+    :rtype: AlpacAudio.TrackListEntry or :js:data:`null`
     ###
     return null if idx < 0 or idx >= @get('tracks').length
     if @get('current_track') == idx
@@ -111,16 +111,16 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
 
   add_playlist: (playlist) ->
     ###
-    Adds a non-queue playlist to the queue.
+    Adds a non-queue track list to the queue.
 
-    :type playlist: :class:`playlist::AlpacAudio.Playlist`
+    :type playlist: :class:`playlist::AlpacAudio.TrackList`
                     (not :class:`queue::AlpacAudio.Queue`)
     ###
     return unless playlist?
     return if playlist instanceof AlpacAudio.Queue
     @add_entries(playlist.get('tracks').models)
 
-class AlpacAudio.QueueView extends AlpacAudio.PlaylistView
+class AlpacAudio.QueueView extends AlpacAudio.TrackListView
   constructor: (options) ->
     super(options)
     @model.on('change:current_track', @on_current_track_changed)
