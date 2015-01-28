@@ -30,7 +30,7 @@ class AlpacAudio.TrackList extends Backbone.Model
     data.tracks = new AlpacAudio.TrackListEntries(tracks)
     super(data, options)
 
-class AlpacAudio.Playlist extends AlpacAudio.Tracklist
+class AlpacAudio.Playlist extends AlpacAudio.TrackList
   ###
   A representation of a Google Music playlist, which can be mutable.
   ###
