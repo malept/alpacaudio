@@ -22,15 +22,6 @@ AlpacAudio.MAX_FAILED_TRACKS = 4
 # Functions
 ####
 
-AlpacAudio.human_readable_time = (seconds) ->
-  ###
-  Converts seconds to MM:SS.
-  ###
-  minutes = (seconds / 60).toFixed(0)
-  remainder = (seconds % 60).toFixed(0)
-  remainder = "0#{remainder}" if remainder < 10
-  return "#{minutes}:#{remainder}"
-
 AlpacAudio.load_audio_backend = ->
   backends = [
     AlpacAudio.HTML5Audio

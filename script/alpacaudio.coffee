@@ -34,6 +34,21 @@ AlpacAudio.base_template_url = '/templates'
 
 AlpacAudio.QUEUE_ID = 'queue'
 
+AlpacAudio.human_readable_time = (seconds) ->
+  ###
+  Converts seconds to MM:SS.
+  ###
+  minutes = Math.floor(seconds / 60)
+  remainder = Math.round(seconds % 60)
+  remainder = "0#{remainder}" if remainder < 10
+  return "#{minutes}:#{remainder}"
+
+AlpacAudio.human_readable_milliseconds = (ms) ->
+  ###
+  Converts milliseconds to MM:SS.
+  ###
+  return AlpacAudio.human_readable_time(ms / 1000)
+
 AlpacAudio.get_template = (id, variable_name = 'model') ->
   ###
   Shortcut for creating a template function.
