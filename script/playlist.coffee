@@ -105,7 +105,6 @@ class AlpacAudio.TrackListView extends AlpacAudio.SingletonView
   tagName: 'section'
   id: 'playlist'
   template: AlpacAudio.get_template('playlist', 'playlist')
-  table_template: AlpacAudio.get_template('playlist-table', 'playlist')
   track_template: AlpacAudio.get_template('playlist-track', 'pt')
   events:
     'mouseover .albumart span.fa': 'album_mouseover'
