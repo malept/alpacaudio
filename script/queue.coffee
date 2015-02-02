@@ -24,6 +24,7 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
     data ||= {}
     data.id = AlpacAudio.QUEUE_ID
     data.name = 'Play Queue'
+    data.description = 'Play Queue'
     data.current_track = 0
     super(data, options)
 
