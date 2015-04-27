@@ -154,7 +154,7 @@ class AlpacAudio.PlayerView extends Backbone.View
 
     @$volume_icon = @$el.find('.volume-control').children('span')
     @$volume_widget = @$el.find('.volume-control-widget')
-    @$volume_widget.val(@settings.get('volume')).change()
+    @change_volume_widget(get_volume())
 
     @play_mode_btn = @$el.find('.play-mode')
     @set_play_mode_button(@play_mode_btn)
@@ -187,6 +187,33 @@ class AlpacAudio.PlayerView extends Backbone.View
 
   next_track: ->
     @_select_track('next')
+
+  get_volume: ->
+    Number(@settings.get('volume'))
+
+  set_volume: (value) ->
+    @settings.set('volume', value)
+    volume = value / 100
+    @audio.volume(volume)
+    @$volume_icon.removeClass('fa-volume-off fa-volume-down fa-volume-up')
+    if volume > 0.5
+      volume_cls = 'fa-volume-up'
+    else if volume > 0
+      volume_cls = 'fa-volume-down'
+    else
+      volume_cls = 'fa-volume-off'
+    @$volume_icon.addClass(volume_cls)
+
+  adjust_volume: (delta) ->
+    volume = @get_volume()
+    volume += delta
+    volume = 0 if volume < 0
+    volume = 100 if volume > 100
+    @set_volume(volume)
+    @change_volume_widget(volume)
+
+  change_volume_widget: (value) ->
+    @$volume_widget.children('input').val(value).change()
 
   ####
   # Event Handlers
@@ -233,18 +260,7 @@ class AlpacAudio.PlayerView extends Backbone.View
     @$volume_widget.toggleClass('invisible')
 
   update_volume: (e) =>
-    value = $(e.target).val()
-    @settings.set('volume', value)
-    volume = value / 100
-    @audio.volume(volume)
-    @$volume_icon.removeClass('fa-volume-off fa-volume-down fa-volume-up')
-    if volume > 0.5
-      volume_cls = 'fa-volume-up'
-    else if volume > 0
-      volume_cls = 'fa-volume-down'
-    else
-      volume_cls = 'fa-volume-off'
-    @$volume_icon.addClass(volume_cls)
+    @set_volume($(e.target).val())
 
   update_position_from_progress: (e) =>
     return false unless @audio.play_started()
