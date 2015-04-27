@@ -2,10 +2,9 @@
 AlpacAudio
 ==========
 
-*No alpacas were made in the creation of this player.*
+*No alpacas were made/harmed in the creation of this player.*
 
-AlpacAudio is a Backbone.js-based audio player frontend, written in
-CoffeeScript.
+AlpacAudio is a Backbone.js/CoffeeScript-based HTML5 audio player frontend.
 
 Legal
 -----
