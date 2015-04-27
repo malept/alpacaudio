@@ -154,7 +154,7 @@ class AlpacAudio.PlayerView extends Backbone.View
 
     @$volume_icon = @$el.find('.volume-control').children('span')
     @$volume_widget = @$el.find('.volume-control-widget')
-    @change_volume_widget(get_volume())
+    @change_volume_widget(@get_volume())
 
     @play_mode_btn = @$el.find('.play-mode')
     @set_play_mode_button(@play_mode_btn)
