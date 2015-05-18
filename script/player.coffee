@@ -40,8 +40,9 @@ AlpacAudio.load_audio_backend = ->
 class AlpacAudio.PlayerSettings extends Backbone.Model
   localStorage: new Backbone.LocalStorage("#{AlpacAudio.player_name}.Settings")
   defaults:
-    volume: 50
     play_mode: 0
+    previous_volume: 0
+    volume: 50
 
   play_modes: [
     'one',
@@ -192,6 +193,7 @@ class AlpacAudio.PlayerView extends Backbone.View
     Number(@settings.get('volume'))
 
   set_volume: (value) ->
+    @settings.set('previous_volume', @get_volume())
     @settings.set('volume', value)
     volume = value / 100
     @audio.volume(volume)
@@ -209,8 +211,12 @@ class AlpacAudio.PlayerView extends Backbone.View
     volume += delta
     volume = 0 if volume < 0
     volume = 100 if volume > 100
-    @set_volume(volume)
     @change_volume_widget(volume)
+
+  toggle_mute: ->
+    previous_volume = Number(@settings.get('previous_volume'))
+    current_volume = @get_volume()
+    @change_volume_widget(if current_volume == 0 then previous_volume else 0)
 
   change_volume_widget: (value) ->
     @$volume_widget.children('input').val(value).change()
