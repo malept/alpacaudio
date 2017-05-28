@@ -2,15 +2,9 @@
   "name": "alpacaudio",
   "version": "0.0.0",
   "description": "HTML5 audio player",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/malept/alpacaudio.git"
-  },
+  "repository": "malept/alpacaudio",
   "author": "Mark Lee",
   "license": "GPL-3.0+",
-  "bugs": {
-    "url": "https://github.com/malept/alpacaudio/issues"
-  },
   "scripts": {
     "test": "coffeelint -f .coffeelint.json script"
   },
