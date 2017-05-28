@@ -122,6 +122,7 @@ class AlpacAudio.View extends Backbone.View
     ###
     return @model.toJSON()
 
+
 class AlpacAudio.SingletonView extends AlpacAudio.View
   ###
   Abstract base class for singleton views.

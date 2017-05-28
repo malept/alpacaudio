@@ -30,6 +30,7 @@ class AlpacAudio.TrackList extends Backbone.Model
     data.tracks = new AlpacAudio.TrackListEntries(tracks)
     super(data, options)
 
+
 class AlpacAudio.Playlist extends AlpacAudio.TrackList
   ###
   A representation of a Google Music playlist, which can be mutable.
@@ -53,6 +54,7 @@ class AlpacAudio.Playlist extends AlpacAudio.TrackList
     ###
     @get('tracks').add(entry_or_entries)
 
+
 class AlpacAudio.PlaylistCollection extends Backbone.Collection
   ###
   A collection of tracklists.
@@ -68,6 +70,7 @@ class AlpacAudio.PlaylistCollection extends Backbone.Collection
       playlist.tracks = playlist.tracks.filter (entry) ->
         return entry.track?.storeId?
       return playlist.tracks.length > 0
+
 
 class AlpacAudio.TrackListEntry extends Backbone.Model
   constructor: (data, options) ->

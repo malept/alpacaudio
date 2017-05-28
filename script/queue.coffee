@@ -121,6 +121,7 @@ class AlpacAudio.Queue extends AlpacAudio.Playlist
     return if playlist instanceof AlpacAudio.Queue
     @add_entries(playlist.get('tracks').models)
 
+
 class AlpacAudio.QueueView extends AlpacAudio.TrackListView
   constructor: (options) ->
     super(options)
