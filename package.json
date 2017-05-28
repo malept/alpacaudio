@@ -11,7 +11,9 @@
   "bugs": {
     "url": "https://github.com/malept/alpacaudio/issues"
   },
-  "coffeelintConfig": ".coffeelint.json",
+  "scripts": {
+    "test": "coffeelint -f .coffeelint.json script"
+  },
   "devDependencies": {
     "coffeelint": "^1.8.1",
     "node-serve": "0.0.3"
